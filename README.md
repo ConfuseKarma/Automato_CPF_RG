@@ -48,6 +48,4 @@ Certifique-se de ter instalado:
 ### ⚡ Rodando o Projeto  
 
 1. **Clone o repositório**  
-   ```sh
-   git clone https://github.com/seuusuario/automato-cpf-rg.git
-   cd automato-cpf-rg
+   
