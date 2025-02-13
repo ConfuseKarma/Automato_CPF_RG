@@ -49,5 +49,6 @@ Certifique-se de ter instalado:
 
 ### ⚡ Rodando o Projeto  
 
-1. **Clone o repositório**  
+1. **Clone o repositório**
+2. **Acesse o endereço local para ver o funcionamento do programa (http://localhost:8080)**
    
