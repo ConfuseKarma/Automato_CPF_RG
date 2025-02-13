@@ -16,8 +16,8 @@ A implementação segue os princípios de **compiladores e linguagens formais**,
 ## 🛠️ Tecnologias Utilizadas  
 
 - **Java 17+**  
-- **Spring Boot** (para a interface web)  
-- **JUnit 5** (para testes unitários)  
+- **HttpHandler** (para a interface web)  
+- **JSON**   
 - **HTML, CSS e JavaScript** (para a interface interativa)  
 
 ## 📌 Requisitos Técnicos  
