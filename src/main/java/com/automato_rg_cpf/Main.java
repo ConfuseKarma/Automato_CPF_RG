@@ -13,13 +13,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        // Chamada da página HTML
         server.createContext("/", new StaticFileHandler("index.html"));
-
-        // Chamada do JavaScript
         server.createContext("/script.js", new StaticFileHandler("script.js"));
-
-        // Endpoint para validação
         server.createContext("/validate", new ValidationHandler());
 
         server.setExecutor(null);
@@ -27,7 +22,6 @@ public class Main {
         System.out.println("Servidor rodando em http://localhost:8080/");
     }
 
-    // Manipulador para arquivos estáticos (HTML e JS)
     static class StaticFileHandler implements HttpHandler {
         private final String filePath;
 
@@ -51,42 +45,49 @@ public class Main {
         }
     }
 
-    // Manipulador para validação de CPF/RG
     static class ValidationHandler implements HttpHandler {
+        private static final Automato automatoCPF = AutomatoCPF_RG.criarAutomatoCPF();
+        private static final Automato automatoRG = AutomatoCPF_RG.criarAutomatoRG();
+    
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
                 @SuppressWarnings("resource")
                 String requestBody = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))
                         .lines().collect(Collectors.joining("\n"));
-    
+        
                 JSONObject json = new JSONObject(requestBody);
-                String input = json.getString("value");
-    
-                boolean isCPF = input.replaceAll("\\D", "").length() == 11;
-                String responseMessage;
-    
+                String input = json.getString("value").replaceAll("\\D", ""); // Remove caracteres não numéricos
+                
+                boolean isCPF = input.length() == 11; // CPF tem 11 caracteres numéricos
+                String responseMessage = "";
+        
+                // Verificando se a entrada é válida com o automato
                 if (isCPF) {
-                    // Valida CPF (Chama o método de validar CPF)
-                    boolean isValidCPF = ValidaCPF.validarCPF(input);
-                    responseMessage = isValidCPF ? "CPF Válido" : "CPF Inválido";
+                    if (automatoCPF.validarEntrada(input)) {
+                        // Agora, validamos o CPF com a lógica específica
+                        responseMessage = ValidaCPF.validarCPF(input) ? "CPF Válido" : "CPF Inválido";
+                    } else {
+                        responseMessage = "CPF Inválido (Formato incorreto)";
+                    }
                 } else {
-                    // Valida RG (Chama o método de validar RG)
-                    boolean isValidRG = ValidaRG.validarRG(input);
-                    responseMessage = isValidRG ? "RG Válido" : "RG Inválido";
+                    if (automatoRG.validarEntrada(input)) {
+                        // Agora, validamos o RG com a lógica específica
+                        responseMessage = ValidaRG.validarRG(input) ? "RG Válido" : "RG Inválido";
+                    } else {
+                        responseMessage = "RG Inválido (Formato incorreto)";
+                    }
                 }
-    
-                // Enviar resposta com o cabeçalho Content-Type como texto simples
+        
                 exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
                 byte[] responseBytes = responseMessage.getBytes(StandardCharsets.UTF_8);
-    
-                exchange.sendResponseHeaders(200, responseBytes.length); // Envia o cabeçalho com o tamanho correto
-                exchange.getResponseBody().write(responseBytes);  // Escreve a resposta
+                exchange.sendResponseHeaders(200, responseBytes.length);
+                exchange.getResponseBody().write(responseBytes);
                 exchange.close();
             }
         }
+        
+
     }
     
-   
-
 }
