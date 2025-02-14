@@ -11,7 +11,7 @@ Este projeto implementa um **autômato genérico** capaz de reconhecer dois form
 - **RG**: 7 a 9 dígitos, sendo que o último pode ser um número ou "X".  
 - **CPF**: Exatamente 11 dígitos numéricos.  
 
-A implementação segue os princípios de **compiladores e linguagens formais**, utilizando **estruturas de dados avançadas** e **testes automatizados**.  
+A implementação segue os princípios de **compiladores e linguagens formais**, utilizando **estruturas de dados avançadas** e **testes automatizados**. O autômato é construído de forma modular, permitindo a validação de entradas de acordo com as regras específicas de cada formato.   
 
 ## 🛠️ Tecnologias Utilizadas  
 
