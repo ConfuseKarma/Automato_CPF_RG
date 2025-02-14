@@ -55,30 +55,27 @@ public class Main {
                 @SuppressWarnings("resource")
                 String requestBody = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))
                         .lines().collect(Collectors.joining("\n"));
-        
+    
                 JSONObject json = new JSONObject(requestBody);
                 String input = json.getString("value").replaceAll("\\D", ""); // Remove caracteres não numéricos
-                
+    
                 boolean isCPF = input.length() == 11; // CPF tem 11 caracteres numéricos
                 String responseMessage = "";
-        
-                // Verificando se a entrada é válida com o automato
+    
                 if (isCPF) {
                     if (automatoCPF.validarEntrada(input)) {
-                        // Agora, validamos o CPF com a lógica específica
                         responseMessage = ValidaCPF.validarCPF(input) ? "CPF Válido" : "CPF Inválido";
                     } else {
                         responseMessage = "CPF Inválido (Formato incorreto)";
                     }
                 } else {
                     if (automatoRG.validarEntrada(input)) {
-                        // Agora, validamos o RG com a lógica específica
                         responseMessage = ValidaRG.validarRG(input) ? "RG Válido" : "RG Inválido";
                     } else {
                         responseMessage = "RG Inválido (Formato incorreto)";
                     }
                 }
-        
+    
                 exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
                 byte[] responseBytes = responseMessage.getBytes(StandardCharsets.UTF_8);
                 exchange.sendResponseHeaders(200, responseBytes.length);
@@ -86,8 +83,6 @@ public class Main {
                 exchange.close();
             }
         }
-        
-
     }
     
 }

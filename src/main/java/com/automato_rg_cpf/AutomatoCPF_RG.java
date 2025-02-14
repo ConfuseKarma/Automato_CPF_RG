@@ -28,7 +28,25 @@ public class AutomatoCPF_RG {
 
     public static Automato criarAutomatoRG() {
         // Para RG, temos entre 7 a 9 dígitos numéricos, com 'X' no último dígito
-        List<Character> caracteresValidosRG = List.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X');
-        return criarAutomatoGenerico(9, caracteresValidosRG, List.of(6, 7, 8)); // Estados finais são o 7, 8 e 9
+        List<Character> caracteresValidosRG = List.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        Map<Integer, Map<Character, Integer>> transicoes = new HashMap<>();
+
+        // Configura a transição para os primeiros dígitos (0 a 8)
+        for (int i = 0; i < 9; i++) {
+            transicoes.put(i, new HashMap<>());
+            for (char c : caracteresValidosRG) {
+                transicoes.get(i).put(c, i + 1);
+            }
+        }
+
+        // Configura a transição para o último dígito (estado 9)
+        transicoes.put(9, new HashMap<>());
+        for (char c : caracteresValidosRG) {
+            transicoes.get(9).put(c, 10); // Transição para o estado final
+        }
+        transicoes.get(9).put('X', 10); // Permite 'X' no último dígito
+
+        // Estados finais são 7, 8 e 9 (para RGs com 7, 8 ou 9 dígitos)
+        return new Automato(transicoes, List.of(7, 8, 9));
     }
 }
