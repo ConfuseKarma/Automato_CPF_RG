@@ -46,43 +46,58 @@ public class Main {
     }
 
     static class ValidationHandler implements HttpHandler {
-        private static final Automato automatoCPF = AutomatoCPF_RG.criarAutomatoCPF();
-        private static final Automato automatoRG = AutomatoCPF_RG.criarAutomatoRG();
-    
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            if ("POST".equals(exchange.getRequestMethod())) {
-                @SuppressWarnings("resource")
-                String requestBody = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))
-                        .lines().collect(Collectors.joining("\n"));
-    
-                JSONObject json = new JSONObject(requestBody);
-                String input = json.getString("value").replaceAll("\\D", ""); // Remove caracteres não numéricos
-    
-                boolean isCPF = input.length() == 11; // CPF tem 11 caracteres numéricos
-                String responseMessage = "";
-    
-                if (isCPF) {
-                    if (automatoCPF.validarEntrada(input)) {
-                        responseMessage = ValidaCPF.validarCPF(input) ? "CPF Válido" : "CPF Inválido";
-                    } else {
-                        responseMessage = "CPF Inválido (Formato incorreto)";
-                    }
+    private static final Automato automatoCPF = AutomatoCPF_RG.criarAutomatoCPF();
+    private static final Automato automatoRG = AutomatoCPF_RG.criarAutomatoRG();
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        if ("POST".equals(exchange.getRequestMethod())) {
+            String requestBody = new BufferedReader(
+                new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))
+                .lines().collect(Collectors.joining("\n"));
+
+            JSONObject json = new JSONObject(requestBody);
+            String originalInput = json.getString("value").toUpperCase();
+            
+            // Sanitização diferenciada para CPF e RG
+            String cpfInput = originalInput.replaceAll("[^0-9]", "");
+            String rgInput = originalInput.replaceAll("[^0-9X]", "");
+            rgInput = rgInput.replaceAll("X(?!$)", ""); // Remove Xs que não estão no final
+
+            boolean isCPF = cpfInput.length() == 11;
+            String responseMessage;
+            String sanitizedInput;
+
+            if (isCPF) {
+                sanitizedInput = cpfInput;
+                if (automatoCPF.validarEntrada(sanitizedInput)) {
+                    responseMessage = ValidaCPF.validarCPF(sanitizedInput) 
+                        ? "CPF Válido" : "CPF Inválido (Dígitos verificadores incorretos)";
                 } else {
-                    if (automatoRG.validarEntrada(input)) {
-                        responseMessage = ValidaRG.validarRG(input) ? "RG Válido" : "RG Inválido";
-                    } else {
-                        responseMessage = "RG Inválido (Formato incorreto)";
-                    }
+                    responseMessage = "CPF Inválido (Formato incorreto)";
                 }
-    
-                exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
-                byte[] responseBytes = responseMessage.getBytes(StandardCharsets.UTF_8);
-                exchange.sendResponseHeaders(200, responseBytes.length);
-                exchange.getResponseBody().write(responseBytes);
-                exchange.close();
+            } else {
+                sanitizedInput = rgInput;
+                if (automatoRG.validarEntrada(sanitizedInput)) {
+                    responseMessage = ValidaRG.validarRG(sanitizedInput) 
+                        ? "RG Válido" : "RG Inválido (Dígito verificador incorreto)";
+                } else {
+                    responseMessage = "RG Inválido (Formato incorreto)";
+                }
             }
+
+            sendResponse(exchange, responseMessage);
         }
     }
+
+    private void sendResponse(HttpExchange exchange, String response) throws IOException {
+        exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
+        byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
+        exchange.sendResponseHeaders(200, responseBytes.length);
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(responseBytes);
+        }
+    }
+}
     
 }
