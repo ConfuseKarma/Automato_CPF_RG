@@ -2,11 +2,10 @@ package com.automato_rg_cpf;
 
 public class ValidaRG {
 
-    public static boolean validarRG(String rg) {
-        rg = rg.replaceAll("[^0-9X]", ""); // Remove pontos e traços
-    
+     public static boolean validarRG(String rg) {
+        rg = rg.replaceAll("[^0-9X]", "");
         if (rg.length() < 7 || rg.length() > 9) {
-            return false; // RG deve ter entre 7 e 9 caracteres
+            return false;
         }
     
         // Verifica se 'X' aparece em qualquer posição que não seja a última
