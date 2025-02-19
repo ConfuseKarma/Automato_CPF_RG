@@ -1,4 +1,5 @@
 package com.automato_rg_cpf;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class Automato {
     public boolean validarEntrada(String entrada) {
         int estadoAtual = 0;
         for (char c : entrada.toCharArray()) {
-            if (!transicoes.containsKey(estadoAtual) || 
+            if (!transicoes.containsKey(estadoAtual) ||
                 !transicoes.get(estadoAtual).containsKey(c)) {
                 return false;
             }
