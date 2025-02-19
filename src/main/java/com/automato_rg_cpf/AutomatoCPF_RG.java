@@ -27,26 +27,28 @@ public class AutomatoCPF_RG {
     }
 
     public static Automato criarAutomatoRG() {
-    List<Character> digitos = List.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-    Map<Integer, Map<Character, Integer>> transicoes = new HashMap<>();
+        List<Character> digitos = List.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        Map<Integer, Map<Character, Integer>> transicoes = new HashMap<>();
 
-    // Estados 0-8: aceitam dígitos
-    for (int i = 0; i < 9; i++) {
-        transicoes.put(i, new HashMap<>());
-        for (char c : digitos) {
-            transicoes.get(i).put(c, i + 1);
+        // Estados 0-8: dígitos (para RGs de até 9 dígitos)
+        for (int i = 0; i < 9; i++) {
+            transicoes.put(i, new HashMap<>());
+            for (char c : digitos) {
+                transicoes.get(i).put(c, i + 1);
+            }
         }
-    }
 
-    // Estado 9: último dígito (pode ser 'X' para RG de 9 caracteres)
-    transicoes.put(9, new HashMap<>());
-    for (char c : digitos) {
-        transicoes.get(9).put(c, 10);
-    }
-    transicoes.get(9).put('X', 10);
+        // Estado 9: aceita 'X' como último caractere (para RGs com 9 dígitos + X)
+        transicoes.put(9, new HashMap<>());
+        transicoes.get(9).put('X', 10);
 
-    // Estados finais: 7, 8, 9, 10 (para 8, 9, 10, 11 caracteres?)
-    // Ajuste conforme a regra real do RG (ex: 7-9 dígitos + 'X' opcional)
-    return new Automato(transicoes, List.of(7, 8, 9, 10)); // Exemplo ajustado
-}
+        // Estados finais:
+        // - 6: 7 dígitos (índice 6 + 1 transições)
+        // - 7: 8 dígitos
+        // - 8: 9 dígitos
+        // - 9: 9 dígitos + X (10 caracteres, mas ValidaRG limita a 9)
+        // - 10: 9 dígitos + X (mas ValidaRG não permite, então removemos)
+        // Ajuste para aceitar 7, 8, 9 dígitos ou 8 dígitos + X (9 caracteres)
+        return new Automato(transicoes, List.of(6, 7, 8, 9));
+    }
 }
