@@ -13,6 +13,11 @@ Este projeto implementa um **autômato genérico** capaz de reconhecer dois form
 
 A implementação segue os princípios de **compiladores e linguagens formais**, utilizando **estruturas de dados avançadas** e **testes automatizados**. O autômato é construído de forma modular, permitindo a validação de entradas de acordo com as regras específicas de cada formato.   
 
+## Autômato Ilustrado
+
+![image](https://github.com/user-attachments/assets/d1683540-4c77-4db7-87ad-670ce8cec95c)
+
+
 ## 🛠️ Tecnologias Utilizadas  
 
 - **Java 17+**  
