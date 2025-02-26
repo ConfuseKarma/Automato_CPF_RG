@@ -4,12 +4,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validador de RG e CPF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #38a169;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .valido {
+            background: #f0fff4 !important;
+            color: #38a169 !important;
+            border: 2px solid #48bb78 !important;
+            display: block !important;
+        }
+
+        .invalido {
+            background: #fff5f5 !important;
+            color: #f56565 !important;
+            border: 2px solid #fc8181 !important;
+            display: block !important;
+        }
+    </style>
 </head>
 <body>
-    <h2>Validador de RG e CPF</h2>
-    <input type="text" id="inputValue" placeholder="Digite RG ou CPF">
-    <button onclick="validar()">Validar</button>
-    <p id="resultado"></p>  <!-- Este é o elemento onde a resposta será exibida -->
-    <script src="script.js"></script>
+    <div class="container">
+        <h2>Validador de Documentos</h2>
+        <div class="input-group">
+            <input type="text" 
+                   id="inputValue" 
+                   placeholder="Digite CPF ou RG (qualquer formato)">
+        </div>
+        <button onclick="validar()">Validar</button>
+        <p id="resultado"></p>
+    </div>
+    <script>
+        function validar() {
+            const input = document.getElementById("inputValue");
+            const resultado = document.getElementById("resultado");
+            const valor = input.value.trim();
+            
+            // Resetar estados
+            resultado.classList.remove('valido', 'invalido');
+            resultado.style.display = 'none';
+            
+            if (!valor) {
+                resultado.textContent = "Digite um CPF ou RG";
+                resultado.classList.add('invalido');
+                resultado.style.display = 'block';
+                return;
+            }
+
+            resultado.textContent = "Validando...";
+            resultado.style.display = 'block';
+
+            fetch('/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ value: valor })
+            })
+            .then(response => response.text())
+            .then(data => {
+                resultado.textContent = data;
+                resultado.style.display = 'block';
+                resultado.classList.add(data.includes("Válido") ? 'valido' : 'invalido');
+            })
+            .catch(error => {
+                resultado.textContent = "Erro na validação";
+                resultado.style.display = 'block';
+                resultado.classList.add('invalido');
+            });
+        }
+
+        // Evento para tecla Enter
+        document.getElementById("inputValue").addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') validar();
+        });
+    </script>
 </body>
 </html>

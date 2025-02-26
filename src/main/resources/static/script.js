@@ -1,20 +1,41 @@
 function validar() {
-    let valor = document.getElementById("inputValue").value;
-    console.log("Valor digitado:", valor);  // Adicionando log de depuração
+    const input = document.getElementById("inputValue");
+    const resultado = document.getElementById("resultado");
+    const valor = input.value.trim();
+    
+    // Limpar estados anteriores
+    resultado.classList.remove('valido', 'invalido');
+    resultado.style.display = 'none'; // Esconder inicialmente
+    
+    if (!valor) {
+        resultado.textContent = "Digite um CPF ou RG";
+        resultado.classList.add('invalido');
+        resultado.style.display = 'block';
+        return;
+    }
 
-    // Requisição POST para o servidor
+    resultado.textContent = "Validando...";
+    resultado.style.display = 'block';
+
     fetch('/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value: valor })
     })
-    .then(response => response.text())  // Recebe o conteúdo da resposta como texto
+    .then(response => response.text())
     .then(data => {
-        console.log("Resposta do servidor:", data);  // Verificando a resposta do servidor no console
-        document.getElementById("resultado").innerText = data;  // Exibe a resposta na tela
+        resultado.textContent = data;
+        resultado.classList.add(data.includes("Válido") ? 'valido' : 'invalido');
+        resultado.style.display = 'block';
     })
     .catch(error => {
-        console.error("Erro ao validar:", error);
-        document.getElementById("resultado").innerText = "Erro ao validar!";  // Exibe erro em caso de falha
+        resultado.textContent = "Erro na validação";
+        resultado.classList.add('invalido');
+        resultado.style.display = 'block';
     });
 }
+
+// Evento Enter
+document.getElementById("inputValue").addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') validar();
+});
