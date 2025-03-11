@@ -42,7 +42,7 @@ _(Aqui você pode adicionar um diagrama representando o autômato, seja com uma 
 
 ## 📂 Estrutura do Projeto
 
-![image](https://github.com/user-attachments/assets/bf9c0266-9190-44b9-b157-804929960ff3)
+![image](https://github.com/user-attachments/assets/106c0bf3-e6e4-4c69-9b8c-92b414e02d45)
 
 
 ## 🚀 Como Executar o Projeto  
