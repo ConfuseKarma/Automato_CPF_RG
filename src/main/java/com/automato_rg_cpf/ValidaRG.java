@@ -21,7 +21,7 @@ public class ValidaRG {
         }
 
         int resto = soma % 11;
-        int digitoEsperado = (resto == 10) ? 0 : resto;
+        int digitoEsperado = (resto == 10) ? 10 : resto;
 
         char ultimoChar = rg.charAt(rg.length() - 1);
         int ultimoNumero = (ultimoChar == 'X') ? 10 : Character.getNumericValue(ultimoChar);
