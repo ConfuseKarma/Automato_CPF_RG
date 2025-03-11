@@ -1,7 +1,9 @@
-package com.automato_rg_cpf;
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+import com.automato_rg_cpf.ValidaCPF;
+import static org.junit.jupiter.api.Assertions.*;
+
+
+import org.junit.jupiter.api.Test;
 
 public class ValidaCPFTest {
 
@@ -12,7 +14,8 @@ public class ValidaCPFTest {
 
     @Test
     public void testCPFInvalidoDigitosVerificadores() {
-        assertFalse(ValidaCPF.validarCPF("12345678909"));
+        assertFalse(ValidaCPF.validarCPF("12245678909"));
+        //Antes era 12345678909 que realmente [e válido]
     }
 
     @Test

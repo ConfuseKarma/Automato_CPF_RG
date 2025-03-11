@@ -1,0 +1,8 @@
+com\automato_rg_cpf\AutomatoCPF_RG.class
+com\automato_rg_cpf\AutomatoCPF_RGTest.class
+com\automato_rg_cpf\ValidaCPF.class
+com\automato_rg_cpf\Main$ValidationHandler.class
+com\automato_rg_cpf\ValidaRG.class
+com\automato_rg_cpf\Automato.class
+com\automato_rg_cpf\Main$StaticFileHandler.class
+com\automato_rg_cpf\Main.class

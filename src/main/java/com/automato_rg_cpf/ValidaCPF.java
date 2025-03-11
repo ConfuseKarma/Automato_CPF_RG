@@ -3,20 +3,22 @@ package com.automato_rg_cpf;
 public class ValidaCPF {
 
     public static boolean validarCPF(String cpf) {
-        cpf = cpf.replaceAll("[^0-9]", ""); // Remove pontos e traços
+        cpf = cpf.replaceAll("[^0-9]", ""); // Remove caracteres não numéricos
 
         if (cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) {
-            return false; // Verifica se tem 11 números e não é repetitivo (ex: 111.111.111-11)
+            return false; // Verifica se tem 11 dígitos e não é uma sequência repetitiva
         }
 
         int[] numeros = cpf.chars().map(c -> c - '0').toArray();
-        return calcularDigitoVerificador(numeros, 9) == numeros[9] &&
-               calcularDigitoVerificador(numeros, 10) == numeros[10];
+
+        // Calcula e compara os dígitos verificadores
+        return calcularDigitoVerificador(numeros, 10) == numeros[9] &&
+               calcularDigitoVerificador(numeros, 11) == numeros[10];
     }
 
-    private static int calcularDigitoVerificador(int[] numeros, int posicao) {
-        int soma = 0, peso = posicao + 1;
-        for (int i = 0; i < posicao; i++) {
+    private static int calcularDigitoVerificador(int[] numeros, int pesoInicial) {
+        int soma = 0, peso = pesoInicial;
+        for (int i = 0; i < pesoInicial - 1; i++) { // Usa pesoInicial - 1 para percorrer os números corretos
             soma += numeros[i] * peso--;
         }
         int resto = soma % 11;

@@ -38,6 +38,7 @@ public class Main {
                 return;
             }
 
+            @SuppressWarnings("resource")
             byte[] fileBytes = new FileInputStream(file).readAllBytes();
             exchange.sendResponseHeaders(200, fileBytes.length);
             exchange.getResponseBody().write(fileBytes);
@@ -53,6 +54,7 @@ public class Main {
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
                 // Lê o corpo da requisição
+                @SuppressWarnings("resource")
                 String requestBody = new BufferedReader(
                         new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))
                         .lines().collect(Collectors.joining("\n"));

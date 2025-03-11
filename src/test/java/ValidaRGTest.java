@@ -1,7 +1,8 @@
-package com.automato_rg_cpf;
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+import com.automato_rg_cpf.ValidaRG;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class ValidaRGTest {
 
