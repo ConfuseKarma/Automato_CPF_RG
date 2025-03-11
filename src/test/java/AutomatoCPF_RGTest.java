@@ -1,7 +1,9 @@
-package com.automato_rg_cpf;
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+import com.automato_rg_cpf.Automato;
+import com.automato_rg_cpf.AutomatoCPF_RG;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class AutomatoCPF_RGTest {
 
